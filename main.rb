@@ -18,6 +18,12 @@ get '/index' do
 	erb :index
 end
 
+
+get '/detail/:id' do |id| 
+  @word = Word.find(params['id'])
+	erb :detail
+end
+
 post '/new' do
   Word.create({:word => params[:word], :memo => params[:memo]})
   redirect '/index'
