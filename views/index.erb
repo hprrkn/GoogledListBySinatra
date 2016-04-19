@@ -1,5 +1,10 @@
-<form method="post" action="/new">
+<h4>add new word</h4>
+<form method="post" action="/api/new">
   <input type="text" name="word">
   <input type="text" name="memo">
   <input type="submit" value="add!">
 </form>
+
+<% @words.each do |word| %>
+  <li><a href="/detail/<%=word.id%>"><%= word.word %></a></li>
+<% end %>

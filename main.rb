@@ -15,22 +15,24 @@ class Tag < ActiveRecord::Base
 end
 
 get '/index' do
+  @words = Word.all
 	erb :index
 end
 
-
-get '/detail/:id' do |id| 
-  @word = Word.find(params['id'])
+get %r{/detail/([0-9]*)} do |id| 
+  @word = Word.find(id)
 	erb :detail
 end
 
-post '/new' do
+post '/api/new' do
   Word.create({:word => params[:word], :memo => params[:memo]})
   redirect '/index'
 	erb :index
 end
 
-get '/list' do
-  @words = Word.all
-	erb :list
+post %r{/api/delete/([0-9]*)}do |id|
+  Word.destroy(params['id'])
+  redirect '/index'
+	erb :index
 end
+
