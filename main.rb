@@ -30,7 +30,7 @@ post '/api/new' do
 	erb :index
 end
 
-post %r{/api/delete/([0-9]*)}do |id|
+post %r{/api/delete/([0-9]*)} do |id|
   Word.destroy(params['id'])
   redirect '/index'
 	erb :index
