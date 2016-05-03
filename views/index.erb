@@ -8,6 +8,8 @@
   <input type="submit" value="add!">
 </form>
 
-<% @words.each do |word| %>
-  <li><a href="/detail/<%=word.id%>"><%= word.word %></a></li>
+<ul>
+<% @countOfMonth.each do |countOfMonth| %>
+  <a href="/list/<%= countOfMonth[0] %>"><li><%= countOfMonth[0] %> <%= countOfMonth[1] %></li></a>
 <% end %>
+</ul>

@@ -15,9 +15,16 @@ class Tag < ActiveRecord::Base
 end
 
 get '/index' do
-  @words = Word.all
+  @countOfMonth = Word.group("strftime('%Y-%m', created_at)").count.each
 	erb :index
 end
+
+get %r{/list/(\d{4})\-(\d{2})} do |y,m|
+  from = Date::new(y.to_i,m.to_i,1)
+  to = from >> 1
+  @words = Word.where("created_at >= ? AND created_at < ?", from.strftime("%Y-%m-%d"), to.strftime("%Y-%m-%d"))
+  erb :list
+end  
 
 get %r{/detail/([0-9]*)} do |id| 
   @word = Word.find(id)
@@ -30,7 +37,7 @@ post '/api/new' do
 	erb :index
 end
 
-post %r{/api/delete/([0-9]*)} do |id|
+post '/api/delete' do |id|
   Word.destroy(params['id'])
   redirect '/index'
 	erb :index
