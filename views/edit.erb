@@ -13,3 +13,8 @@
   <input type="hidden" name="wordid" value=<%= @word.id %>>
   <input type="submit" value="edit!">
 </form>
+
+<form method="post" action="/api/delete">
+  <input type="hidden" name="wordid" value=<%= @word.id %>>
+  <input type="submit" value="delete">
+</form>

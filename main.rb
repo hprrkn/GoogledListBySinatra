@@ -61,8 +61,8 @@ post '/api/update' do
   erb :detail 
 end
 
-post '/api/delete' do |id|
-  Word.destroy(params['id'])
+post '/api/delete' do 
+  Word.destroy(params['wordid'])
   redirect '/index'
 	erb :index
 end
