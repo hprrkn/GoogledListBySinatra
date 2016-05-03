@@ -1,6 +1,6 @@
-<%= @word.word%>
+<%= @word.wordtitle%>
 <ul>
-<% @word.tag.each do |tag| %>
-  <li><%= tag.tag %></li>
+<% @word.tags.each do |tag| %>
+  <li><%= tag.tagname %></li>
 <% end %>
 </ul>

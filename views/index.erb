@@ -2,9 +2,9 @@
 <form method="post" action="/api/new">
   <input type="text" name="word">
   <input type="text" name="memo">
-  <input type="checkbox" name="tag" value="0">
-  <input type="checkbox" name="tag" value="1">
-  <input type="checkbox" name="tag" value="2">
+  <% @tags.each do |tag| %>
+    <input type="checkbox" name="tag_id[]" value=<%= tag.id %>><%= tag.tagname %>
+  <% end %>
   <input type="submit" value="add!">
 </form>
 
