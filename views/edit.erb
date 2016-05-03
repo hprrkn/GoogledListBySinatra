@@ -1,0 +1,15 @@
+<form method="post" action="/api/update">
+  <input type="text" name="word" value=<%= @word.wordtitle %>>
+  <input type="text" name="memo" value=<%= @word.memo %>>
+  <% @tags.each do |tag| %>
+    <input type="checkbox" name="tag_id[]" value=<%= tag.id %>
+      <% @word.tags.each do |checkedtag| %> 
+           <% if checkedtag == tag then %> 
+          checked="checked"
+          <% end %>
+      <% end %>
+    ><%= tag.tagname %>
+  <% end %>
+  <input type="hidden" name="wordid" value=<%= @word.id %>>
+  <input type="submit" value="edit!">
+</form>

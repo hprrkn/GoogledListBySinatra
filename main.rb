@@ -34,6 +34,12 @@ get %r{/detail/([0-9]*)} do |id|
 	erb :detail
 end
 
+get %r{/edit/([0-9]*)} do |id|
+  @word = Word.find(id)
+  @tags = Tag.all
+  erb :edit
+end
+
 post '/api/new' do
   new_word = Word.create({:wordtitle => params[:word], :memo => params[:memo]})
   params['tag_id'].each do |param|
@@ -41,6 +47,18 @@ post '/api/new' do
   end 
   redirect '/index'
 	erb :index
+end
+
+post '/api/update' do
+  wordid = params[:wordid]
+  editword = Word.find(wordid)
+  editword.update({:wordtitle => params[:word], :memo => params[:memo]})
+  editword.tags.clear
+  params['tag_id'].each do |param|
+    editword.tags << Tag.find(param)
+  end
+  redirect "/detail/#{wordid}"
+  erb :detail 
 end
 
 post '/api/delete' do |id|
