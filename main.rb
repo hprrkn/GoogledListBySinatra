@@ -73,6 +73,14 @@ get '/setting' do
   erb :setting
 end
 
+post '/login/register' do
+  @user = User.create({:username => params[:username], :password => params[:password]})
+  session[:login] = true
+  session[:uId] = @user.id
+  redirect 'index'
+  erb :index
+end
+
 get '/index' do
   @countOfMonth = @userWords.group("strftime('%Y-%m', created_at)").count.each
   @tags = @userTags.all

@@ -1,10 +1,17 @@
 <% if @msg.present? then %>
-loginsitene
   <%=@msg %>
 <% end %>
 
+<label>Login</label>
 <form method="post" action="/login/check">
   <input type="text" name="username">ID
   <input type="text" name="password">PW
-  <input type="submit" value="ligin">
+  <input type="submit" value="login">
+</form>
+
+<label>Register</label>
+<form method="post" action="/login/register">
+  <input type="text" name="username">ID
+  <input type="text" name="password">PW
+  <input type="submit" value="register">
 </form>
