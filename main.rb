@@ -68,9 +68,10 @@ post '/api/delete' do
 end
 
 post '/api/new/tag' do
-  Word.create({:tag => params[:tag]})
+  newTag = Tag.create({:tagname => params[:tagname]})
+  newTag.to_json(:root => false)
 end
 
 post '/api/delete/tag' do |id|
-  Word.destroy(params['id'])
+  Tag.find(params['id']).destroy
 end

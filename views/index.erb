@@ -2,14 +2,68 @@
 <form method="post" action="/api/new">
   <input type="text" name="word">
   <input type="text" name="memo">
-  <% @tags.each do |tag| %>
-    <input type="checkbox" name="tag_id[]" value=<%= tag.id %>><%= tag.tagname %>
-  <% end %>
+  <div id="tagList">
+    <% @tags.each do |tag| %>
+     <input type="checkbox" name="tag_id[]" value=<%= tag.id %>><label><%= tag.tagname %></label>
+    <% end %>
+  </div>
   <input type="submit" value="add!">
 </form>
+<div id="formbox">
+  <button id="plusButton" onclick="createForm();">+</button> 
+</div>
 
 <ul>
 <% @countOfMonth.each do |countOfMonth| %>
   <a href="/list/<%= countOfMonth[0] %>"><li><%= countOfMonth[0] %> <%= countOfMonth[1] %></li></a>
 <% end %>
 </ul>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+<script>
+function createForm(){
+     var plusButton = document.getElementById("plusButton")
+     var formBox = document.getElementById("formbox")
+     formBox.removeChild(plusButton)
+     var input = document.createElement("input")
+     input.setAttribute("name","tagname")
+     input.setAttribute("id","tagInput")
+     var submitButton = document.createElement("button")
+     submitButton.innerHTML = "button"
+     submitButton.setAttribute("id","submitButton")
+     formBox.appendChild(input)
+     formBox.appendChild(submitButton)
+     $("#plusbutton").remove
+}
+$(document).on("click","#submitButton",function(){
+//$("#submitButton").click(function(){
+//  var newTagName = document.getElementById('tagInput').val()
+  var formBox = document.getElementById("formbox")
+  var reButton= document.createElement("button")
+  reButton.setAttribute("id", "plusButton")
+  reButton.setAttribute("onclick", "createForm()")
+  reButton.innerHTML = "+"
+  var newTagName = $("#tagInput").val()
+  $.post('/api/new/tag',{
+    tagname:newTagName 
+  },function(json){
+  console.log(json)
+    $("#tagInput").remove()
+    $("#submitButton").remove()
+    formBox.appendChild(reButton)
+//    var newTagCheck = document.createElement("input")
+//    newTagCheck.setAttribute("type","checkbox")
+//    newTagCheck.setAttribute("name","tag_id[]")
+//    $("tagList").append(newTagCheck)
+    var tagObj = JSON.parse(json)
+    $("#tagList").append(
+      $("<input>", {
+        type : "checkbox",
+        name : "tag_id[]",
+        checked : "checked",
+        value : tagObj.id
+      }))
+      ($("<label></label>").html(tagObj.tagname).appendTo("#tagList")
+    )
+  })
+})
+</script>
