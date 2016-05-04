@@ -1,0 +1,9 @@
+<% if @msg.present? then %>
+  <%=@msg %>
+<% end %>
+
+<form method="post" action="/login/check">
+  <input type="text" name="username">ID
+  <input type="text" name="password">PW
+  <input type="submit" value="ligin">
+</form>

@@ -2,18 +2,67 @@ require 'sinatra'
 require 'active_record'
 require 'logger'
 
+configure do
+  enable :sessions
+  set :session_secret, "mysessionsecret"
+end
+
 ActiveRecord::Base.establish_connection(
   "adapter" => "sqlite3",
   "database" => "./googledword.db"
 )
 
+class User < ActiveRecord::Base
+  has_many :words
+  has_many :tags
+end
+
 class Word < ActiveRecord::Base
   has_and_belongs_to_many :tags
+  belongs_to :users
 end
 
 class Tag < ActiveRecord::Base
   has_and_belongs_to_many :words
+  belongs_to :users
 end
+
+before do
+  p request.url
+  if request.url =~ %r{/login} then
+  else
+     if !session[:login] then
+       @msg = "Please LogIn"
+       redirect '/login'
+     else
+       @userId = session[:uId]
+     end
+  end
+end
+
+get '/login' do
+  p "plese login"
+  if @msg.present? then
+    @msg = "plese loginnnn"
+  end
+  erb :login
+end
+
+post '/login/check' do
+  p "logincheck"
+  @user = User.where({:username => params[:username]}).first
+  if @user.present? then
+     if @user.password == params[:password] then
+       session[:login] = true
+       session[:uId] = @user.id
+       redirect '/index'
+       erb :index
+     end
+  else
+    redirect '/login'
+  end
+end
+
 
 get '/index' do
   @countOfMonth = Word.group("strftime('%Y-%m', created_at)").count.each
