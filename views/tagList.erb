@@ -1,0 +1,6 @@
+tagList.erb
+<% @tags.each do |tag| %>
+  <li><a href="/tag/detaal/<%= tag.id %>"><%= tag.tagname %></a></li>
+<% end %>
+
+

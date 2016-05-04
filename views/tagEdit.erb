@@ -1,0 +1,12 @@
+tagEdit.erb
+
+<form method="post" action="/api/tag/update">
+  <input type="text" name="tagname" value=<%= @tag.tagname %>>
+  <input type="hidden" name="tagid" value=<%= @tag.id %>>
+  <input type="submit" value="edit!">
+</form>
+
+<form method="post" action="/api/tag/delete">
+  <input type="hidden" name="tagid" value=<%= @tag.id %>>
+  <input type="submit" value="delete">
+</form>

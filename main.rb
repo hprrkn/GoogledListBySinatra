@@ -40,6 +40,22 @@ get %r{/edit/([0-9]*)} do |id|
   erb :edit
 end
 
+get '/tag/list' do
+  @tags = Tag.all
+  erb :tagList
+end
+
+get %r{/tag/detaal/([0-9]*)} do |id|
+  @tag = Tag.find(id)
+  @words = Word.includes(:tags).where('tags.id' => id)
+  erb :tagDetail
+end
+
+get %r{/tag/ediit/([0-9]*)} do |id|
+  @tag = Tag.find(id)
+  erb :tagEdit
+end
+
 post '/api/new' do
   new_word = Word.create({:wordtitle => params[:word], :memo => params[:memo]})
   params['tag_id'].each do |param|
@@ -72,6 +88,17 @@ post '/api/new/tag' do
   newTag.to_json(:root => false)
 end
 
-post '/api/delete/tag' do |id|
-  Tag.find(params['id']).destroy
+post '/api/tag/delete' do 
+  Tag.find(params['tagid']).destroy
+  redirect '/tag/list'
+  erb :tagList
 end
+
+post '/api/tag/update' do
+  tagid = params[:tagid]
+  edittag = Tag.find(tagid)
+  edittag.update({:tagname => params[:tagname]})
+  redirect "/tag/detaal/#{tagid}"
+  erb :tagDetail
+end
+

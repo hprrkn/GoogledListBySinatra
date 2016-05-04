@@ -1,4 +1,7 @@
-list.erb
+tagDetail.erb
+<h4><%= @tag.tagname %></h4>
 <% @words.each do |word| %>
   <li><a href="/detail/<%=word.id%>"><%= word.wordtitle %></a></li>
 <% end %>
+
+<a href="/tag/ediit/<%=@tag.id %>">edit</a>
