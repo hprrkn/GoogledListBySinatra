@@ -63,6 +63,15 @@ post '/login/check' do
   end
 end
 
+get '/logout' do
+  session.clear
+  redirect '/login'
+  erb :login
+end
+
+get '/setting' do
+  erb :setting
+end
 
 get '/index' do
   @countOfMonth = @userWords.group("strftime('%Y-%m', created_at)").count.each
