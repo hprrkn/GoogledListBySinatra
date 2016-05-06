@@ -28,9 +28,8 @@ class Tag < ActiveRecord::Base
 end
 
 before do
-  if request.url =~ %r{/login} then
-  else
-     if !session[:login] then
+  if request.url !=~ %r{/login} then
+     if !session[:loginOk] then
        @msg = "Please LogIn"
        redirect '/login'
      else
@@ -47,16 +46,11 @@ end
 
 post '/login/check' do
   @user = User.where({:username => params[:username]}).first
-  if @user.present? then
-     if @user.password == params[:password] then
-       session[:login] = true
-       session[:uId] = @user.id
-       redirect '/index'
-       erb :index
-     else
-       redirect '/login'
-       erb :login
-     end
+  if @user.present? && @user.password == params[:password]  then
+    session[:loginOk] = true
+    session[:uId] = @user.id
+    redirect '/index'
+    erb :index
   else
     redirect '/login'
     erb :login
@@ -75,7 +69,7 @@ end
 
 post '/login/register' do
   @user = User.create({:username => params[:username], :password => params[:password]})
-  session[:login] = true
+  session[:loginOk] = true
   session[:uId] = @user.id
   redirect 'index'
   erb :index
