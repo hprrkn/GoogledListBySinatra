@@ -82,6 +82,7 @@ end
 
 post '/login/register' do
   @user = User.create({:username => params[:username], :password => params[:password]})
+  validate(@user)
   session[:loginOk] = true
   session[:uId] = @user.id
   redirect 'index'
