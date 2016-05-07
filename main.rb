@@ -1,6 +1,5 @@
 require 'sinatra'
 require 'active_record'
-require 'logger'
 
 configure do
   enable :sessions
@@ -29,6 +28,7 @@ end
 
 before do
   if request.url =~ %r{/login} then
+p "loginpage"
   else
      if !session[:login] then
        @msg = "Please LogIn"
