@@ -15,16 +15,29 @@ ActiveRecord::Base.establish_connection(
 class User < ActiveRecord::Base
   has_many :words
   has_many :tags
+  validates :username, presence: true
+  validates :password, presence: true
 end
 
 class Word < ActiveRecord::Base
   has_and_belongs_to_many :tags
   belongs_to :users
+  validates :wordtitle, presence: true
 end
 
 class Tag < ActiveRecord::Base
   has_and_belongs_to_many :words
   belongs_to :users
+  validates :tagname, presence: true
+end
+
+helpers do
+  def validate(obj)
+    if !obj.valid? then
+      redirect request.referrer
+      return
+    end
+  end 
 end
 
 before do
@@ -117,6 +130,7 @@ end
 
 post '/api/new' do
   new_word = Word.create({:user_id => @userId, :wordtitle => params[:word], :memo => params[:memo]})
+  validate(new_word)
   if params['tag_id'].present? then
      params['tag_id'].each do |param|
        new_word.tags << @userTags.find(param)
@@ -128,11 +142,12 @@ end
 
 post '/api/update' do
   wordid = params[:wordid]
-  editword = @userWords.find(wordid)
-  editword.update({:wordtitle => params[:word], :memo => params[:memo]})
-  editword.tags.clear
+  editWord = @userWords.find(wordid)
+  editWord.update({:wordtitle => params[:word], :memo => params[:memo]})
+  validate(editWord)
+  editWord.tags.clear
   params['tag_id'].each do |param|
-    editword.tags << @userTags.find(param)
+    editWord.tags << @userTags.find(param)
   end
   redirect "/detail/#{wordid}"
   erb :detail 
@@ -146,6 +161,7 @@ end
 
 post '/api/new/tag' do
   newTag = Tag.create({:user_id => @userId, :tagname => params[:tagname]})
+  validate(newTag)
   newTag.to_json(:root => false)
 end
 
@@ -157,8 +173,9 @@ end
 
 post '/api/tag/update' do
   tagid = params[:tagid]
-  edittag = @userTags.find(tagid)
-  edittag.update({:tagname => params[:tagname]})
+  editTag = @userTags.find(tagid)
+  editTag.update({:tagname => params[:tagname]})
+  validate(editTag)
   redirect "/tag/detaal/#{tagid}"
   erb :tagDetail
 end
