@@ -1,5 +1,6 @@
 require 'sinatra'
 require 'active_record'
+require "sinatra/reloader" if development?
 
 configure do
   enable :sessions
@@ -40,7 +41,17 @@ helpers do
 end
 
 before do
-  if request.url !=~ %r{/login} then
+  if request.url =~ %r{/android} then
+    #p request.cookies #cookies空っぽ
+    if !params[:token].nil? && params[:token] == "tokenstring" && !params[:userId].nil? then
+        @loginOk = true
+        @userWords = User.find(params[:userId]).words
+        @userTags = User.find(params[:userId]).tags
+    else 
+        @loginOk = false
+    end
+  elsif request.url =~ %r{/login} then
+  else
      if !session[:loginOk] then
        @msg = "Please LogIn"
        redirect '/login'
@@ -180,3 +191,30 @@ post '/api/tag/update' do
   erb :tagDetail
 end
 
+post '/android/api/login' do
+  @user = User.where({:username => params[:username]}).first
+  if @user.present? && @user.password == params[:password]  then
+    token = "tokenstring" # todo: token生成する どこでtoken保持する??
+    res = {"status" => "200", "loginOk" => "true", "token" => token, "userId" => @user.id}
+    res.to_json(:root => false)
+  else
+    res = {"status" => "200", "loginOk" => "false", "token" => "", "userId" => ""}
+    res.to_json(:root => false)
+  end
+end
+
+get '/android/api/index' do
+    if @loginOk then
+    p "loginok"
+        result = {}
+        comjson = []
+        @userWords.group("strftime('%Y-%m', created_at)").count.each do |com|
+            comjson << {"month" => com[0], "count" => com[1]}
+        end
+        tags = @userTags.all
+        result["coms"] = comjson
+        result["tagList"] = tags
+        p result
+        result.to_json(:root => false)
+    end
+end

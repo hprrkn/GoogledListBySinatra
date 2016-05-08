@@ -7,3 +7,6 @@ source "https://rubygems.org"
  gem "unicorn"
  gem "sqlite3"
 
+ group :development do
+    gem "sinatra-contrib", require: "sinatra/reloader"
+ end       
